@@ -181,13 +181,13 @@ def upload():
         for year, group in groups:
             gens_by_year[year] = group
 
-
-        meteo_by_day['22854'].to_csv('22854_meteo_item.csv', index=False)
-        Dates_stfn['22854'].to_csv('22854_dates_item.csv', index=False)
-        generations['22854'].to_csv('22854_generations_item.csv', index=False)
-        gens_bind.to_csv('gens_bind.csv', index=False)
-        meteo_coords.to_csv('METCOORDS.csv', index = False)
-        gens_by_year[2017].to_csv('gby.csv', index = False)
+        
+        #meteo_by_day['22854'].to_csv('22854_meteo_item.csv', index=False)
+        #Dates_stfn['22854'].to_csv('22854_dates_item.csv', index=False)
+        #generations['22854'].to_csv('22854_generations_item.csv', index=False)
+        ##gens_bind.to_csv('gens_bind.csv', index=False)
+        #meteo_coords.to_csv('METCOORDS.csv', index = False)
+        #gens_by_year[2017].to_csv('gby.csv', index = False)
                 
 
         return "Files uploaded and extracted successfully."
