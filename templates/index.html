@@ -22,12 +22,5 @@
         <input type="number" id="end_month" name="end_month"><br><br>
         <input type="submit" value="Upload and Process">
     </form>
-    {% if processing_complete %}
-    <h2>Download Processed Data</h2>
-    <a href="{{ url_for('download') }}" download>Download Processed Data as Zip</a>
-    {% else %}
-    <!-- Display a message when processing is not complete -->
-    <p>Upload and process files to see the download link.</p>
-    {% endif %}
 </body>
 </html>
