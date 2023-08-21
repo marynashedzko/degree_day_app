@@ -1,14 +1,33 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Zip Folder Upload</title>
+    <title>Upload Files</title>
 </head>
 <body>
-    <h1>Upload a Zip Folder</h1>
+    <h1>Upload Files</h1>
     <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="zip_file" accept=".zip">
-        <input type="submit" value="Upload">
+        <label for="zip_file">Select a zip file to upload:</label>
+        <input type="file" id="zip_file" name="zip_file"><br><br>
+        <label for="coordinates_file">Select a CSV file with meteostation coordinates:</label>
+        <input type="file" id="coordinates_file" name="coordinates_file"><br><br>
+        <label for="mosquito_life">Mosquito Life (days):</label>
+        <input type="number" id="mosquito_life" name="mosquito_life"><br><br>
+        <label for="threshold">Threshold:</label>
+        <input type="number" id="threshold" name="threshold"><br><br>
+        <label for="requiredDD">Required Degree-Days:</label>
+        <input type="number" id="requiredDD" name="requiredDD"><br><br>
+        <label for="start_month">Start Month:</label>
+        <input type="number" id="start_month" name="start_month"><br><br>
+        <label for="end_month">End Month:</label>
+        <input type="number" id="end_month" name="end_month"><br><br>
+        <input type="submit" value="Upload and Process">
     </form>
+    {% if processing_complete %}
+    <h2>Download Processed Data</h2>
+    <a href="{{ url_for('download') }}" download>Download Processed Data as Zip</a>
+    {% else %}
+    <!-- Display a message when processing is not complete -->
+    <p>Upload and process files to see the download link.</p>
+    {% endif %}
 </body>
 </html>
