@@ -1,10 +1,9 @@
 # app.py
 import io
 import zipfile
-from flask import send_file
 import os
 import pandas as pd
-from flask import Flask, request, redirect, Response, url_for, render_template
+from flask import Flask, request, redirect, Response, url_for, render_template, send_file
 from zipfile import ZipFile
 import numpy as np
 from werkzeug.utils import secure_filename 
@@ -15,11 +14,6 @@ app = Flask(__name__)
 # Create the "uploads" folder if it doesn't exist
 if not os.path.exists("uploads"):
     os.makedirs("uploads")
-
-# Create the "downloads" folder if it doesn't exist
-if not os.path.exists("downloads"):
-    os.makedirs("downloads")
-
 
 def read_meteo_coords(file_path):
     # Read the coordinates of meteostations from the CSV file in the "uploads" folder
