@@ -1,7 +1,10 @@
 # app.py
+import io
+import zipfile
+from flask import send_file
 import os
 import pandas as pd
-from flask import Flask, request, Response, url_for, render_template
+from flask import Flask, request, redirect, Response, url_for, render_template
 from zipfile import ZipFile
 import numpy as np
 from werkzeug.utils import secure_filename 
@@ -13,6 +16,11 @@ app = Flask(__name__)
 if not os.path.exists("uploads"):
     os.makedirs("uploads")
 
+# Create the "downloads" folder if it doesn't exist
+if not os.path.exists("downloads"):
+    os.makedirs("downloads")
+
+
 def read_meteo_coords(file_path):
     # Read the coordinates of meteostations from the CSV file in the "uploads" folder
     meteo_coords = pd.read_csv(file_path, delimiter=';', skipinitialspace=True, names=['id', 'lat', 'lon'])
@@ -22,7 +30,7 @@ def read_meteo_coords(file_path):
 
     return meteo_coords_gdf
 
-    #return meteo_coords_gdf
+
 def process_file(file_path):
     # Read the file as a DataFrame with specified column names and data types
     data = pd.read_csv(file_path, delimiter=';', escapechar='\\', skipinitialspace=True, names=['ID', 'year', 'month', 'day', 'Tmin', 'temp', 'Tmax', 'precipitation'])
@@ -36,12 +44,47 @@ def convert_to_datetime(df):
         # Drop rows with missing dates (NaT values)
         #df.dropna(subset=['Date'], inplace=True)
 
+
+@app.route("/download_zip", methods=["GET"])
+def download_zip():
+    global gens_by_year
+    if gens_by_year:
+        # Create an in-memory zip file
+        zip_buffer = io.BytesIO()
+
+        # Create a ZipFile object
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            for year, df in gens_by_year.items():
+                # Convert DataFrame to CSV data
+                csv_data = df.to_csv(index=False)
+                # Write CSV data to the zip file
+                file_name = f'gens_by_year_{year}.csv'
+                zipf.writestr(file_name, csv_data)
+
+        # Set the zip file content type
+        zip_buffer.seek(0)
+        return send_file(
+            zip_buffer,
+            download_name='gens_by_year.zip',
+            as_attachment=True,
+            mimetype='application/zip'
+        )
+
+    return "No data available to download."
+
 @app.route("/")
 def index():
     return render_template("index.html")
 
+gens_by_year = {}
+
+
+
 @app.route("/upload", methods=["POST"])
 def upload():
+
+
+
     # Get the uploaded files
     zip_file = request.files["zip_file"]
     coordinates_file = request.files["coordinates_file"]
@@ -175,28 +218,28 @@ def upload():
         #gens_bind = pd.merge(gens_bind, meteo_coords, on='id')
 
         groups = gens_bind.groupby('year')
+        global gens_by_year
         gens_by_year = {}
 
         # Group generations data by year
         for year, group in groups:
             gens_by_year[year] = group
 
-        
+
         #meteo_by_day['22854'].to_csv('22854_meteo_item.csv', index=False)
         #Dates_stfn['22854'].to_csv('22854_dates_item.csv', index=False)
         #generations['22854'].to_csv('22854_generations_item.csv', index=False)
-        ##gens_bind.to_csv('gens_bind.csv', index=False)
+        #gens_bind.to_csv('gens_bind.csv', index=False)
         #meteo_coords.to_csv('METCOORDS.csv', index = False)
-        #gens_by_year[2017].to_csv('gby.csv', index = False)
+        gens_by_year[2017].to_csv('gby.csv', index = False)
                 
+        
 
-        return "Files uploaded and extracted successfully."
+
+
+        return render_template("download_link.html")  # Render the template with the download link
 
     return "Failed to upload the file."
-
-
-
-
 
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=False)
