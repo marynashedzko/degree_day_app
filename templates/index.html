@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Upload Files</title>
+    <title>Vector-Borne Disease Distribution Model</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>Upload Files</h1>
+    <h1>Vector-Borne Disease Distribution Model</h1>
     <form action="/upload" method="post" enctype="multipart/form-data">
         <label for="zip_file">Select a zip file to upload:</label>
         <input type="file" id="zip_file" name="zip_file"><br><br>
         <label for="coordinates_file">Select a CSV file with meteostation coordinates:</label>
         <input type="file" id="coordinates_file" name="coordinates_file"><br><br>
-        <label for="mosquito_life">Mosquito Life (days):</label>
+        <label for="mosquito_life">Vector Lifespan (days):</label>
         <input type="number" id="mosquito_life" name="mosquito_life"><br><br>
         <label for="threshold">Threshold:</label>
         <input type="number" id="threshold" name="threshold"><br><br>
